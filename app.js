@@ -2,17 +2,19 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const routes = require('./src/routes');
 const PORT = process.env.DB_PORT
 const bodyParser = require('body-parser')
 var cors = require('cors')
 app.use(cors())
 
-
-// routes
-
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
+
+// routes
+app.use('/api/', routes);
+
 
 app.listen(PORT, () => console.log(`server is running port ${PORT}
 http://localhost:${PORT}`))
