@@ -8,6 +8,7 @@ router.post('/Signup', userController.createUser);
 router.post('/login', userController.login);
 router.post('/forgot-password/request', userController.reqForgotPassword);
 router.post('/forgot-password/new-password/:token', userController.forgotPassword);
+router.patch('/edit-password', verifyAccess, userController.editPassword);
 
 
 module.exports = router;
