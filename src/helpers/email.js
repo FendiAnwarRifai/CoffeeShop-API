@@ -8,8 +8,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-exports.sendEmail = (email, text) =>{
-  console.log(text)
+exports.sendEmail = (email, data) =>{
   return new Promise((resolve, reject)=>{
     const message = {
       from: process.env.EMAIL, 
@@ -18,31 +17,43 @@ exports.sendEmail = (email, text) =>{
       html: `<!DOCTYPE html>
       <html lang="en">
       <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <style>
-        .wrapper{
-          height: 200px;
-          width: 300px;
-          background-color: rgb(0, 89, 255);
-          margin: auto;
-        }
-        h2{
-          text-align: center;
-        }
-        .wrapper h3{
-          color: rgb(250, 248, 248);
-          text-align: center;
-        }
-      </style>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Document</title>
+          <style>
+              * {
+                  font-family: sans-serif;
+              }
+              h2 {
+                  text-align: center;
+                  background: #c82022;
+                  line-height: 60px;
+                  margin: 30px auto;
+                  color: #fff;
+              }
+              .link {
+                  display: inline-block;
+                  width: 250px;
+                  height: 40px;
+                  line-height: 40px;
+                  text-decoration: none;
+                  color: #ffffff !important;
+                  font-weight: bold;
+                  text-align: center;
+                  background: #c82022;
+                  margin-left: 37%;
+                  border-radius: 10px;
+              }
+              .link-1{
+                  text-decoration: none;
+              }
+          </style>
       </head>
       <body>
-      <h2>Silahkan Veifikasi email anda disini</h2>
-        <div class="wrapper">
-          <h3>${text}</h3>
-        </div>
-      <h3>Terimakasih <br>regards, <br><br>Developer Zwallet </h3>
+          <h2>Hi, ${data.username}</h2>
+          <p>Kami telah menerima permintaanmu untuk perubahan password akun coffee shop.
+          Silahkan klik tombol dibawah untuk melanjutkan <a href="${data.link}" class="link-1">link ini</a> untuk mengganti password anda</p>
+              <a href="${data.link}" class="link">Ubah password</a>
       </body>
       </html>`, 
     }

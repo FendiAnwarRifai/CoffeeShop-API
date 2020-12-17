@@ -3,6 +3,7 @@ const express = require('express');
 const models = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {sendEmail} = require('../helpers/email')
 
 const getAllUser = async (req, res) => {
     const user = await models.users.findAll({});
@@ -93,7 +94,7 @@ const login = (req, res) => {
     })
   .then ((users) => {
     if (users === null) {
-      res.status(400).json({
+      res.status(404).json({
         'status': 'ERROR',
         'messages': 'user not found',
         'data': {},
@@ -108,13 +109,17 @@ const login = (req, res) => {
       })
     } else {
       users.password = undefined
+      jwt.sign({ id: users.id, email: users.email, roleId: users.role_id }, process.env.SECRET_KEY, { expiresIn: '500s' }, function (err, token) {
       res.status(200).json({
         'status': 'OK',
         'messages': 'User berhasil login',
         'data': users,
+        'token' : token
       })
+    })
     }
   })
+
   .catch ((err) => {
     res.status(500).json({
       'status': 'ERROR',
@@ -135,24 +140,134 @@ const reqForgotPassword = (req, res) => {
     .then((users) => {
       if (users === null) {
         res.status(400).json({
-          'status': 'ERROR',
+          'status': '400',
           'messages': 'user not found',
           'data': {},
         })
       }else{
-      res.status(200).json({
-        'status': 'OK',
-        'messages': 'Silahkan cek email anda'
-      })
+        jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '500s' }, function (err, token) {
+          const data = {
+            //ToDO link diperbaharui, menggunakan link front-end
+            link: `${process.env.BASE_URL}users/email-verif/${token}`,
+            username: users.username
+          }
+          sendEmail(email, data)
+            .then(()=>{
+              res.status(200).json({
+                'status': '200',
+                'messages': 'Silahkan cek email anda'
+              })
+            })
+            .catch(()=>{
+              return helpers.response(res, null, 500, {
+                message: 'error send email'
+              })
+            })
+          }) 
     }
     })
     .catch((err) => {
       res.status(500).json({
-        'status': 'ERROR',
+        'status': '500',
         'messages': err.message,
         'data': null,
       })
     })
 }
 
-module.exports = { getAllUser, createUser, login, reqForgotPassword }
+const forgotPassword = (req, res) => {
+  const { password, repeat_password } = req.body;
+  const { token } = req.params;
+    jwt.verify(token, process.env.SECRET_KEY, function (err, decoded) {
+      if(err){
+        if (err.name === 'JsonWebTokenError'){
+          res.status(401).json({
+            'status': '401',
+            'messages': 'invalid token'
+          })
+        } else if (err.name === 'TokenExpiredError') {
+          res.status(401).json({
+            'status': '401',
+            'messages': 'Token Expired'
+          })
+        }
+      }
+  if (password !== repeat_password) {
+    res.status(400).json({
+      'status': '400',
+      'messages': 'Password harus sama',
+      'data': {},
+    })
+  }
+  bcrypt.genSalt(10, function (err, salt) {
+    bcrypt.hash(password, salt, function (err, hash) {
+  models.users.update({
+    password: hash
+  },{
+    where: {
+      email: decoded.email
+    }
+  })
+    .then((users) => {
+      if (users === null) {
+        res.status(404).json({
+          'status': '404',
+          'messages': 'user not found',
+          'data': {},
+        })
+      } else {
+        res.status(200).json({
+          'status': '200',
+          'messages': 'Password berhasil diubah',
+        })
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  })
+  })
+  })
+}
+
+const editPassword = (req, res) => {
+  const { userId } = req
+  const { prev_password,  password, repeat_password } = req.body;
+  if (password !== repeat_password) {
+    res.status(400).json({
+      'status': '400',
+      'messages': 'Password harus sama',
+      'data': {},
+    })
+  }
+  bcrypt.genSalt(10, function (err, salt) {
+    bcrypt.hash(password, salt, function (err, hash) {
+  models.users.update({
+    password: hash
+  },{
+    where: {
+      email: decoded.email
+    }
+  })
+    .then((users) => {
+      if (users === null) {
+        res.status(404).json({
+          'status': '404',
+          'messages': 'user not found',
+          'data': {},
+        })
+      } else {
+        res.status(200).json({
+          'status': '200',
+          'messages': 'Password berhasil diubah',
+        })
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  })
+  })
+}
+
+module.exports = { getAllUser, createUser, login, reqForgotPassword, forgotPassword, editPassword }
