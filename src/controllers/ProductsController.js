@@ -2,15 +2,25 @@ const model = require('../models/index')
 const helper = require('../helpers/help')
 const fs = require('fs')
 const Product = {
+    // get product by category
     view: (req, res) => {
+        category = req.query.category
+        sort = req.query.sort || 'DESC'
         const perPage = parseInt(req.query.limit)
         const currentPages = (req.query.page - 1) * perPage
         model.products.findAll({
+            include: [{
+                model: model.category
+            }],
             attributes: ['id', 'name', 'price', 'images'],
-            offset: currentPages, limit: perPage
+            offset: currentPages, limit: perPage,
+            where: {
+                category_id: category
+            },
+            order: [['updatedAt', sort]]
         })
             .then((result) => {
-                res.json(result)
+                return helper.response('success', res, null, 200, result)
             })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
@@ -20,12 +30,7 @@ const Product = {
     getProductById: (req, res) => {
         const productId = req.params.id
         model.products.findAll({
-            include: [{
-                model: model.delivery
-            }],
-            where: {
-                id: productId
-            }
+            where: {id: productId}
         }).then((result) => {
             if (result.length === 0) {
                 return helper.response('success', res, null, 200, 'Id Not Found')
@@ -43,7 +48,7 @@ const Product = {
         // validasi images
         if (!req.file) {
             // if not include images
-            data.images = 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'
+            data.images = 'https://e7.pngegg.com/pngimages/924/927/png-clipart-camera-lens-camera-lens-camera.png'
         }
         else if (req.file.mimetype !== "image/png" && req.file.mimetype !== "image/jpg" && req.file.mimetype !== "image/jpeg") {
             // if the image type is wrong
@@ -62,33 +67,10 @@ const Product = {
             //if there is no error handling it means that it entered the image correctly
             data.images = `${process.env.BASE_URL}/images/${req.file.filename}`
         }
-        const product = {
-            name: data.name,
-            price: data.price,
-            description: data.description,
-            images: data.images,
-            size: data.size,
-            stock: data.stock
-        }
-        return model.sequelize.transaction(t => {
-            return model.products.create(product, { transaction: t })
-                .then((result) => {
-                    return model.delivery.create({
-                        id_product: result.id,
-                        delivery_methods: data.delivery,
-                        start_time: data.start_delivery,
-                        end_time: data.end_delivery
-                    }, { transaction: t })
-                        .catch((err) => {
-                            console.log(err)
-                        })
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-        }).then((result) => {
-            return helper.response('success', res, null, 200, result)
-        })
+        model.products.create(data)
+            .then((result) => {
+                return helper.response('success', res, null, 200, result)
+            })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
             })
@@ -120,22 +102,14 @@ const Product = {
                 { attributes: ['id', 'images'] },
                 { where: { id: productId } }
             ).then((result) => {
-                if (result[0].images !== 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png') {
+                if (result[0].images !== 'https://e7.pngegg.com/pngimages/924/927/png-clipart-camera-lens-camera-lens-camera.png') {
                     const images = result[0].images.split('/')[4]
                     const path = `images/${images}`
                     fs.unlinkSync(path)
                 }
             })
         }
-        const product = {
-            name: data.name,
-            price: data.price,
-            description: data.description,
-            images: data.images,
-            size: data.size,
-            stock: data.stock
-        }
-        model.products.update(product, {
+        model.products.update(data, {
             where: {
                 id: productId
             }
@@ -144,18 +118,6 @@ const Product = {
                 if (result[0] === 0) {
                     return helper.response('warning', res, null, 200, 'Id Not Found')
                 }
-                model.delivery.update({
-                    delivery_methods: data.delivery,
-                    start_time: data.start_delivery,
-                    end_time: data.end_delivery
-                }, {
-                    where: {
-                        id_product: productId
-                    }
-                })
-                    .catch((err) => {
-                        console.log(err)
-                    })
                 return helper.response('success', res, null, 200, 'data was updated successfully')
             })
             .catch((err) => {
