@@ -2,7 +2,6 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
-const routes = require('./src/routes');
 const PORT = process.env.DB_PORT
 const bodyParser = require('body-parser')
 var cors = require('cors')
