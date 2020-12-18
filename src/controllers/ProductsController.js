@@ -1,7 +1,30 @@
 const model = require('../models/index')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 const helper = require('../helpers/help')
 const fs = require('fs')
 const Product = {
+
+    searchProduct: (req, res) => {
+        search = req.query.search
+        model.products.findAll({
+            include: [{
+                model: model.category
+            }],
+            attributes: ['id', 'name', 'price', 'images'],
+            where: {
+                name: {
+                    [Op.like]: `%${search}%`
+                }
+            }
+        })
+            .then((result) => {
+                return helper.response('success', res, null, 200, result)
+            })
+            .catch((err) => {
+                return helper.response('error', res, null, 401, err)
+            })
+    },
     // get product by category
     view: (req, res) => {
         category = req.query.category
