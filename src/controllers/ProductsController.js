@@ -1,14 +1,42 @@
 const model = require('../models/index')
 const helper = require('../helpers/help')
 const fs = require('fs')
-const { nextTick } = require('process')
 const Product = {
     view: (req, res) => {
-
+        const perPage = parseInt(req.query.limit)
+        const currentPages = (req.query.page - 1) * perPage
+        model.products.findAll({
+            attributes: ['id', 'name', 'price', 'images'],
+            offset: currentPages, limit: perPage
+        })
+            .then((result) => {
+                res.json(result)
+            })
+            .catch((err) => {
+                return helper.response('error', res, null, 401, err)
+            })
     },
+
     getProductById: (req, res) => {
-
+        const productId = req.params.id
+         model.products.findAll({
+            include:[{
+                model: model.delivery
+            }],
+             where: {
+                 id: productId
+             }
+         }).then((result) => {
+             if (result.length === 0) {
+                 return helper.response('success', res, null, 200, 'Id Not Found')
+             }
+             return helper.response('success', res, null, 200,result)
+         })
+             .catch((err) => {
+                 return helper.response('error', res, null, 401, err)
+             })
     },
+
     insert: (req, res) => {
         let data = req.body
         data = JSON.parse(JSON.stringify(data))
@@ -37,38 +65,59 @@ const Product = {
             //if there is no error handling it means that it entered the image correctly
             data.images = `${process.env.BASE_URL}/images/${req.file.filename}`
         }
-            const product ={
-                name: data.name,
-                price:data.price,
-                description:data.description,
-                images:data.images,
-                size: data.size,
-                stock:data.stock
-            }
-        model.products.create(product)
-            .then((result) => {
-                model.delivery.create({
-                    id_product:result.id,
-                    delivery_methods: data.delivery,
-                    start_time:data.start_delivery,
-                    end_time:data.end_delivery
-                }).then((result) => {
-                    return helper.response('success', res, null, 200, result)
+        const product = {
+            name: data.name,
+            price: data.price,
+            description: data.description,
+            images: data.images,
+            size: data.size,
+            stock: data.stock
+        }
+        return model.sequelize.transaction(t => {
+            return model.products.create(product, { transaction: t })
+                .then((result) => {
+                    return model.delivery.create({
+                        id_product: result.id,
+                        delivery_methods: data.delivery,
+                        start_time: data.start_delivery,
+                        end_time: data.end_delivery
+                    }, { transaction: t })
+                        .catch((err) => {
+                            console.log(err)
+                        })
                 })
-                    .catch((err) => {
-                        return helper.response('error', res, null, 401, err)
-                    })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }).then((result) => {
+            return helper.response('success', res, null, 200, result)
+        })
+            .catch((err) => {
+                return helper.response('error', res, null, 401, err)
+            })
+
+    },
+
+    update: (req, res) => {
+        
+    },
+
+    delete: (req, res) => {
+        const productId = req.params.id
+        model.products.destroy({
+            where: {
+                id: productId
+            }
+        })
+            .then((result) => {
+                if (result === 0) {
+                    return helper.response('success', res, null, 200, 'Id Not Found')
+                }
+                return helper.response('success', res, null, 200, 'data deleted successfully')
             })
             .catch((err) => {
-               return helper.response('error', res, null, 401, err)
+                return helper.response('error', res, null, 401, err)
             })
-    },
-
-    update: (req,res) => {
-
-    },
-    delete: (req, res) => {
-
     }
 
 
