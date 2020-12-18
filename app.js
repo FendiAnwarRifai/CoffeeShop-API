@@ -11,6 +11,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
+app.use('/images', express.static('./images'))
 
 // routes
 app.use('/api/', routes);
