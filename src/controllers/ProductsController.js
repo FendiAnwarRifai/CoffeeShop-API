@@ -88,7 +88,7 @@ const Product = {
             return helper.response('error', res, null, 401, 'Image size is too large, it must be under 4MB')
         } else {
             //if there is no error handling it means that it entered the image correctly
-            data.images = `${process.env.BASE_URL}/images/${req.file.filename}`
+            data.images = `${process.env.BASE_URL}images/${req.file.filename}`
         }
         model.products.create(data)
             .then((result) => {
@@ -119,7 +119,7 @@ const Product = {
             fs.unlinkSync(path)
             return helper.response('error', res, null, 401, 'Image size is too large, it must be under 8MB')
         } else {
-            data.images = `${process.env.BASE_URL}/images/${req.file.filename}`
+            data.images = `${process.env.BASE_URL}images/${req.file.filename}`
             // process delete image on folder server
             model.products.findAll(
                 { attributes: ['id', 'images'] },
