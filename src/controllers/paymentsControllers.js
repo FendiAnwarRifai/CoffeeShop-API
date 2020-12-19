@@ -145,6 +145,12 @@ const confirmAndPay = (req, res) => {
 
 const markAsDone = (req, res) => {
   const { order_id } = req.body
+  if (req.roleId !== 1) {
+    return res.status(400).json({
+      'status': '400',
+      'messages': 'Hanya admin yang memiliki akses'
+    })
+  }
   models.order.update({
       status_order: 'done'
   },
@@ -154,7 +160,7 @@ const markAsDone = (req, res) => {
       }
     })
     .then((result) => {
-      if (result === 1) {
+      if (result[0] === 1) {
         res.status(200).json({
           'status': 'OK',
           'messages': 'Pesanan selesai'
@@ -162,7 +168,7 @@ const markAsDone = (req, res) => {
       } else {
         res.status(400).json({
           'status': '400',
-          'messages': 'Pesanan gagl',
+          'messages': 'Pesanan gagal',
           'data': {}
         })
       }
