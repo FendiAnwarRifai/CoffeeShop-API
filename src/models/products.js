@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.products.hasOne(models.delivery, {
-        foreignKey: 'id_product'
+      models.products.belongsTo(models.category, {
+        foreignKey: 'category_id'
       })
     }
   };
@@ -22,7 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     images: DataTypes.STRING,
     stock: DataTypes.INTEGER,
     size: DataTypes.STRING,
-    type_id: DataTypes.INTEGER
+    is_dine_in: DataTypes.BOOLEAN,
+    is_home_delivery: DataTypes.BOOLEAN,
+    is_pick_up: DataTypes.BOOLEAN,
+    start_delivery: DataTypes.DATE,
+    end_delivery: DataTypes.DATE,
+    category_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'products',
