@@ -4,8 +4,9 @@ const {verifyAccess} = require('../middlewares/auth');
 const paymentsController = require('../controllers/paymentsControllers');
 
 router.post('/checkout',verifyAccess, paymentsController.checkout);
-// router.post('/signup', paymentsController.createUser);
-// router.post('/login', paymentsController.login);
+router.get('/detail-order/:id', paymentsController.detailOrder);
+router.patch('/confirm-payment', paymentsController.confirmAndPay);
+router.patch('/done', paymentsController.markAsDone);
 // router.post('/forgot-password/request', paymentsController.reqForgotPassword);
 // router.post('/forgot-password/new-password/:token', paymentsController.forgotPassword);
 // router.patch('/edit-password', verifyAccess, paymentsController.editPassword);
