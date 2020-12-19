@@ -23,6 +23,9 @@ module.exports = {
       tax_fee: {
         type: Sequelize.INTEGER
       },
+      shipping: {
+        type: Sequelize.INTEGER
+      },
       total: {
         type: Sequelize.INTEGER
       },
@@ -34,6 +37,10 @@ module.exports = {
       },
       delivery_method: {
         type: Sequelize.ENUM('home delivery', 'dine in', 'take away')
+      },
+      delivery_time: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       createdAt: {
         allowNull: false,

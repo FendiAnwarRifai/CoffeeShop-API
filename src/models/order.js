@@ -19,10 +19,12 @@ module.exports = (sequelize, DataTypes) => {
     customer_phone: DataTypes.STRING,
     subtotal: DataTypes.INTEGER,
     tax_fee: DataTypes.INTEGER,
+    shipping: DataTypes.INTEGER,
     total: DataTypes.INTEGER,
     status_order: DataTypes.ENUM('new order', 'paid', 'done'),
     payment_method_id: DataTypes.INTEGER,
-    delivery_method: DataTypes.ENUM('home delivery', 'dine in', 'take away')
+    delivery_method: DataTypes.ENUM('home delivery', 'dine in', 'take away'),
+    delivery_time: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'order',
