@@ -155,14 +155,15 @@ const reqForgotPassword = (req, res) => {
             username: users.username
           }
           sendEmail(email, data)
-            .then((res) => {
-              res.status(200).json({
+            .then(() => {
+              return res.status(200).json({
                 'status': '200',
                 'messages': 'Silahkan cek email anda'
               })
             })
             .catch((err) => {
-              return helpers.response('error', res, null, 500, 'Error send email')
+              console.log(err)
+              return helpers.response('error', res, err, 500, 'Error send email')
             })
         })
       }
