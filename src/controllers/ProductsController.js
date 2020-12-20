@@ -47,7 +47,10 @@ const Product = {
                     where: {
                         category_id: category
                     }}).then((result2)=>{
-                        return helper.response('success', res, result, 200, result2[0]['COUNT(id)'])
+                        res.json({
+                            result: result,
+                            rows: result2.length
+                        })
                     })
             })
             .catch((err) => {
