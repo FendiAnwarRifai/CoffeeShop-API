@@ -5,7 +5,7 @@ const historyByUser = (req, res) => {
   models.order_detail.findAll({
     include: [{
       model: models.products,
-      attributes: ['id', 'name', 'price']
+      attributes: ['id', 'name', 'price', 'images']
     }, {
       model: models.order,
       attributes: ['id', 'status_order', 'user_id'],
