@@ -1,5 +1,6 @@
 const express = require('express');
 // const { DataTypes } = require('sequelize/types');
+const helpers = require('../helpers/help')
 const models = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -147,23 +148,21 @@ const reqForgotPassword = (req, res) => {
           'data': {},
         })
       } else {
-        jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '500s' }, function (err, token) {
+        jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '120s' }, function (err, token) {
           const data = {
             //ToDO link diperbaharui, menggunakan link front-end
-            link: `${process.env.BASE_URL}users/email-verif/${token}`,
+            link: `http://localhost:8080/auth/new-password/${token}`,
             username: users.username
           }
           sendEmail(email, data)
-            .then(() => {
+            .then((res) => {
               res.status(200).json({
                 'status': '200',
                 'messages': 'Silahkan cek email anda'
               })
             })
-            .catch(() => {
-              return helpers.response(res, null, 500, {
-                message: 'error send email'
-              })
+            .catch((err) => {
+              return helpers.response('error', res, null, 500, 'Error send email')
             })
         })
       }

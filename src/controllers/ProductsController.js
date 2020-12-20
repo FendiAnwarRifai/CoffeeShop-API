@@ -19,7 +19,7 @@ const Product = {
             }
         })
             .then((result) => {
-                return helper.response('success', res, null, 200, result)
+                return helper.response('success', res, result, 200, null)
             })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
@@ -43,7 +43,15 @@ const Product = {
             order: [['updatedAt', sort]]
         })
             .then((result) => {
-                return helper.response('success', res, null, 200, result)
+                model.products.findAll({
+                    where: {
+                        category_id: category
+                    }}).then((result2)=>{
+                        res.json({
+                            result: result,
+                            rows: result2.length
+                        })
+                    })
             })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
@@ -58,7 +66,7 @@ const Product = {
             if (result.length === 0) {
                 return helper.response('success', res, null, 200, 'Id Not Found')
             }
-            return helper.response('success', res, null, 200, result)
+            return helper.response('success', res, result, 200, null)
         })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
@@ -92,7 +100,7 @@ const Product = {
         }
         model.products.create(data)
             .then((result) => {
-                return helper.response('success', res, null, 200, result)
+                return helper.response('success', res, result, 200, null)
             })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
@@ -141,7 +149,7 @@ const Product = {
                 if (result[0] === 0) {
                     return helper.response('warning', res, null, 200, 'Id Not Found')
                 }
-                return helper.response('success', res, null, 200, 'data was updated successfully')
+                return helper.response('success', res, result[0], 200, 'data was updated successfully')
             })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
@@ -159,7 +167,7 @@ const Product = {
                 if (result === 0) {
                     return helper.response('success', res, null, 200, 'Id Not Found')
                 }
-                return helper.response('success', res, null, 200, 'data deleted successfully')
+                return helper.response('success', res, result, 200, 'data deleted successfully')
             })
             .catch((err) => {
                 return helper.response('error', res, null, 401, err)
