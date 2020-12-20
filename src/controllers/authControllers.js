@@ -148,10 +148,10 @@ const reqForgotPassword = (req, res) => {
           'data': {},
         })
       } else {
-        jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '500s' }, function (err, token) {
+        jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '120s' }, function (err, token) {
           const data = {
             //ToDO link diperbaharui, menggunakan link front-end
-            link: `${process.env.BASE_URL}users/email-verif/${token}`,
+            link: `http://localhost:8080/auth/new-password/${token}`,
             username: users.username
           }
           sendEmail(email, data)
