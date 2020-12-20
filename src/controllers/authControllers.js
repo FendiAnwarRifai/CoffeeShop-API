@@ -162,7 +162,7 @@ const reqForgotPassword = (req, res) => {
               })
             })
             .catch((err) => {
-              return helper.response('error', res, null, 500, 'Error send email')
+              return helpers.response('error', res, null, 500, 'Error send email')
             })
         })
       }
