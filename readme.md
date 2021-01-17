@@ -28,14 +28,14 @@
 ## Prerequiste
 - Node.js - Download and Install [Node.js](https://nodejs.org/en/).
 - MySQL - Download and Install [MySQL](https://www.mysql.com/downloads/)
-- Redis - Download and Install [Redis](https://redis.io/)
+- Sequelize - Download and Install [Sequelize](https://sequelize.org/)
 
 
 ## Installation
 ### Clone
 ```
-$ git clone https://github.com/azmprllynsa/tokosidia-API.git
-$ cd tokosidia-API
+$ git clone https://github.com/FendiAnwarRifai/CoffeeShop-API.git
+$ cd CoffeeShop-API
 $ npm install
 ```
 
