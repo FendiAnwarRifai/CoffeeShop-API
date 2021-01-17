@@ -7,6 +7,7 @@ router.post('/checkout',verifyAccess, paymentsController.checkout);
 router.get('/detail-order/:id', paymentsController.detailOrder);
 router.patch('/confirm-payment', paymentsController.confirmAndPay);
 router.patch('/done',verifyAccess, paymentsController.markAsDone);
+router.get('/all', paymentsController.getAllOrder);
 // router.post('/forgot-password/request', paymentsController.reqForgotPassword);
 // router.post('/forgot-password/new-password/:token', paymentsController.forgotPassword);
 // router.patch('/edit-password', verifyAccess, paymentsController.editPassword);

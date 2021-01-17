@@ -189,4 +189,35 @@ const markAsDone = (req, res) => {
     })
 }
 
-module.exports = { checkout, detailOrder, confirmAndPay, markAsDone }
+const getAllOrder = (req, res) => {
+  models.order.findAll({
+    include: [{
+      model: models.users,
+      attributes: ['id', 'username']
+    }],
+  })
+    .then((result) => {
+      if (result) {
+        res.status(200).json({
+          'status': 'OK',
+          'messages': 'Berhasil get detail order',
+          'data': result
+        })
+      } else {
+        res.status(400).json({
+          'status': '400',
+          'messages': 'Gagal get detail order',
+          'data': {}
+        })
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        'status': 'ERROR',
+        'messages': err.message,
+        'data': null,
+      })
+    })
+}
+
+module.exports = { checkout, detailOrder, confirmAndPay, markAsDone, getAllOrder }

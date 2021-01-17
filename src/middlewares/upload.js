@@ -40,10 +40,6 @@ const storage = multer.diskStorage({
                  return helpers.response('ok', res, null, 500, 'Invalid file type. Only jpg, png image files are allowedd.' )
              }
          } else {
-             if (!req.file) {
-                 res.status(500);
-                 res.json('file not found');
-             }
              return next()
          }
      })

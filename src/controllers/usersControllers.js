@@ -44,34 +44,39 @@ const editProfile = (req, res) => {
 }
 
 const updateImage = (req, res) => {
-  const image = `${process.env.BASE_URL}images/${req.file.filename}`;
-  models.users.update({ image },
-    {
-      where: {
-        id: req.userId
-      }
-    })
-    .then((result) => {
-      if (result) {
-        res.status(200).json({
-          'status': 'OK',
-          'messages': 'image Berhasil di update',
-        })
-      } else {
-        res.status(400).json({
-          'status': '400',
-          'messages': 'image tidak berhasil di update',
-          'data': {}
-        })
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        'status': 'ERROR',
-        'messages': err.message,
-        'data': null,
+  if (!req.file) {
+    res.status(500);
+    res.json('file not found');
+  } else {
+    const image = `${process.env.BASE_URL}images/${req.file.filename}`;
+    models.users.update({ image },
+      {
+        where: {
+          id: req.userId
+        }
       })
-    })
+      .then((result) => {
+        if (result) {
+          res.status(200).json({
+            'status': 'OK',
+            'messages': 'image Berhasil di update',
+          })
+        } else {
+          res.status(400).json({
+            'status': '400',
+            'messages': 'image tidak berhasil di update',
+            'data': {}
+          })
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          'status': 'ERROR',
+          'messages': err.message,
+          'data': null,
+        })
+      })
+  }
 }
 
 const deleteImage = (req, res) => {
