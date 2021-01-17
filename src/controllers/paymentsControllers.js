@@ -45,7 +45,7 @@ const checkout = async (req, res) => {
         })
         const stock = result.dataValues.stock - product.qty
         await models.products.update({
-          stock: stock > 0 ? stock : 0 
+          stock: stock > 0 ? stock : 0
         }, {
           where: {
             id: product.product_id
@@ -78,7 +78,14 @@ const detailOrder = (req, res) => {
   const { id } = req.params
   models.order.findOne({
     include: [{
-      model: models.order_detail
+      model: models.order_detail,
+      include: [{
+        model: models.products,
+        attributes: ['name', 'images', 'price']
+      }]
+    }, {
+      model: models.users,
+      attributes: ['id', 'username']
     }],
     where: {
       id
@@ -115,7 +122,7 @@ const confirmAndPay = (req, res) => {
     customer_phone,
     payment_method_id,
     status_order: 'paid'
-  },{
+  }, {
     where: {
       id: order_id
     }
@@ -152,9 +159,9 @@ const markAsDone = (req, res) => {
     })
   }
   models.order.update({
-      status_order: 'done'
+    status_order: 'done'
   },
-  {
+    {
       where: {
         id: order_id
       }

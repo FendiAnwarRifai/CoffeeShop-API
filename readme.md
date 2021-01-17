@@ -102,8 +102,7 @@ $ npm run serve
 | 10  | DELETE      | /api/order/:order_id             | Delete the order by it’s ID                |
 
 ## About Project
-Tokosidia is a project inspired by one of Unicorn in Indonesia, Tokopedia.
-It's API made for Tokodidia using Node Js and Express Js
+this project for Coffee Shop which is a store that sells some good meals, and especially coffee.
 
 ## Contributing
 

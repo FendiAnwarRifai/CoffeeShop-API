@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       models.order.hasMany(models.order_detail, {
         foreignKey: 'order_id'
       })
+      models.order.hasOne(models.users, {
+        foreignKey: 'id',
+        sourceKey: 'user_id'
+      })
     }
   };
   order.init({
