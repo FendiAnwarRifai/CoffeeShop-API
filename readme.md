@@ -136,7 +136,7 @@ Fork the Project
       </td>
       <td align="center">
         <a href="https://github.com/maulanarifai114">
-          <img width="150" src="https://avatars0.githubusercontent.com/u/72542280?s=400&u=d78495aa0e670d3342cf84fcfa7d81c90ce17386&v=4" alt="Raden Maulana Rifa'i Abdullah"><br/>
+          <img width="150" src="https://avatars2.githubusercontent.com/u/72542280?s=400&u=09207f92a439d660f07bb376109fb02b82de500c&v=4" alt="Raden Maulana Rifa'i Abdullah"><br/>
           <b>Raden Maulana Rifa'i Abdullah</b>
         </a>
       </td>
