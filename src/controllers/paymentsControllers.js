@@ -191,6 +191,9 @@ const markAsDone = (req, res) => {
 
 const getAllOrder = (req, res) => {
   models.order.findAll({
+    where: {
+      status_order: 'paid'
+    },
     include: [{
       model: models.users,
       attributes: ['id', 'username']
