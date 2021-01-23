@@ -16,7 +16,7 @@ const checkout = async (req, res) => {
         'messages': `Stock product ${product.dataValues.name} tidak tersedia`
       })
     }
-    subtotal += (product.dataValues.price * item.qty)
+    subtotal += (product.dataValues.price * item.qty) // + size price
   }
   const tax_fee = subtotal * 0.1
   const shipping = delivery_method === 'home delivery' ? 10000 : 0
@@ -33,9 +33,11 @@ const checkout = async (req, res) => {
   })
     .then(async (order) => {
       products.map(async product => {
+        console.log(product.size);
         models.order_detail.create({
           product_id: product.product_id,
           order_id: order.dataValues.id,
+          size: product.size,
           qty: product.qty
         })
         const result = await models.products.findOne({
@@ -55,7 +57,10 @@ const checkout = async (req, res) => {
       if (order) {
         res.status(200).json({
           'status': 'OK',
-          'messages': 'Order berhasil dibuat'
+          'messages': 'Order berhasil dibuat',
+          'data': {
+            order_id: order.dataValues.id
+          }
         })
       } else {
         res.status(400).json({
@@ -81,7 +86,7 @@ const detailOrder = (req, res) => {
       model: models.order_detail,
       include: [{
         model: models.products,
-        attributes: ['name', 'images', 'price']
+        attributes: ['name', 'images', 'price' ]
       }]
     }, {
       model: models.users,
@@ -92,6 +97,7 @@ const detailOrder = (req, res) => {
     }
   })
     .then((result) => {
+      // create map order_detail.product for new price + size price
       if (result) {
         res.status(200).json({
           'status': 'OK',
