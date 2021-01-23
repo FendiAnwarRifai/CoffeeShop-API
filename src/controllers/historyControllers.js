@@ -15,6 +15,7 @@ const historyByUser = (req, res) => {
     }],
   })
   .then((result) => {
+    // liat di FE butuh price product tidak??? klo ya map price  with size price
     if (result) {
       res.status(200).json({
         'status': 'OK',
