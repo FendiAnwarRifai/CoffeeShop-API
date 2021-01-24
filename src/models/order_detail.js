@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       models.order_detail.belongsTo(models.order, {
         foreignKey: 'order_id'
       })
-      models.order_detail.hasMany(models.products, {
+      models.order_detail.hasOne(models.products, {
         foreignKey: 'id',
         sourceKey: 'product_id'
       })

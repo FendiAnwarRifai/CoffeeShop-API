@@ -1,5 +1,13 @@
 const express = require('express');
 const models = require('../models');
+const sizePrice = {
+  R: 0,
+  250: 0,
+  L: 5000,
+  300: 5000,
+  XL: 8000,
+  500: 8000
+}
 
 const historyByUser = (req, res) => {
   models.order_detail.findAll({
@@ -15,7 +23,10 @@ const historyByUser = (req, res) => {
     }],
   })
   .then((result) => {
-    // liat di FE butuh price product tidak??? klo ya map price  with size price
+    result.map(orderDetail => {
+      console.log('here',sizePrice[orderDetail.size])
+      orderDetail.product.dataValues.price += sizePrice[orderDetail.size] || 0
+    });
     if (result) {
       res.status(200).json({
         'status': 'OK',

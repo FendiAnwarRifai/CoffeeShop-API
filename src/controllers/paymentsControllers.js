@@ -1,5 +1,13 @@
 const express = require('express');
 const models = require('../models');
+const sizePrice = {
+  R: 0,
+  250: 0,
+  L: 5000,
+  300: 5000,
+  XL: 8000,
+  500: 8000
+}
 
 const checkout = async (req, res) => {
   const { products, delivery_method, delivery_time } = req.body;
@@ -16,7 +24,7 @@ const checkout = async (req, res) => {
         'messages': `Stock product ${product.dataValues.name} tidak tersedia`
       })
     }
-    subtotal += (product.dataValues.price * item.qty) // + size price
+    subtotal += (product.dataValues.price * item.qty) + (sizePrice[product.size] || 0)
   }
   const tax_fee = subtotal * 0.1
   const shipping = delivery_method === 'home delivery' ? 10000 : 0
@@ -97,7 +105,9 @@ const detailOrder = (req, res) => {
     }
   })
     .then((result) => {
-      // create map order_detail.product for new price + size price
+      result.dataValues.order_details.map(orderDetail => {
+        orderDetail.product.price += sizePrice[orderDetail.size]  || 0
+      });
       if (result) {
         res.status(200).json({
           'status': 'OK',
