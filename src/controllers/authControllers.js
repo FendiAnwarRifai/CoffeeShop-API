@@ -151,7 +151,7 @@ const reqForgotPassword = (req, res) => {
         jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '120s' }, function (err, token) {
           const data = {
             //ToDO link diperbaharui, menggunakan link front-end
-            link: `http://localhost:8080/auth/new-password/${token}`,
+            link: `${process.env.FRONTEND_URL}/auth/new-password/${token}`,
             username: users.username
           }
           sendEmail(email, data)
