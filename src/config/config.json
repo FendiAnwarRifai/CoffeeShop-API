@@ -1,23 +1,23 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "coffee_shop",
-    "host": "127.0.0.1",
+    "username": "freedbtech_coffky",
+    "password": "coffky123",
+    "database": "freedbtech_coffky",
+    "host": "freedb.tech",
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
+    "username": "freedbtech_coffky",
+    "password": "coffky123",
+    "database": "freedbtech_coffky",
+    "host": "freedb.tech",
     "dialect": "mysql"
   },
   "production": {
-    "username": "sql12391320",
-    "password": "1zBGZTk5zP",
-    "database": "sql12391320",
-    "host": "sql12.freesqldatabase.com",
+    "username": "freedbtech_coffky",
+    "password": "coffky123",
+    "database": "freedbtech_coffky",
+    "host": "freedb.tech",
     "dialect": "mysql"
   }
 }
